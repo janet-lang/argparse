@@ -1,4 +1,4 @@
-(use ../argparse)
+(import ../argparse :prefix "")
 
 (def argparse-params
   ["A simple CLI tool. An example to start showing the capabilities of argparse."
