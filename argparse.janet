@@ -95,7 +95,7 @@
                [])))
         (def usage-fragment
           (string
-            (pad-right usage-prefix 25)
+            (pad-right (string usage-prefix " ") 45)
             (if-let [h (handler :help)] h "")
             "\n"))
         (buffer/push-string (if (handler :required) reqdoc opdoc)
