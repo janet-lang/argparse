@@ -13,7 +13,7 @@
     (string str (string/repeat " " (- n len)))))
 
 (defn argparse
-  "Parse (dyn :args process/args) according to options. If the arguments are incorrect,
+  "Parse (dyn :args) according to options. If the arguments are incorrect,
   will return nil and print usage information.
 
   Each option is a table or struct that specifies a flag or option
@@ -60,11 +60,11 @@
 
   # Results table and other things
   (def res @{})
-  (def args (dyn :args process/args))
+  (def args (dyn :args))
   (def arglen (length args))
   (var scanning true)
   (var bad false)
-  (var i 2)
+  (var i 1)
 
   # Show usage
   (defn usage
@@ -100,7 +100,7 @@
             "\n"))
         (buffer/push-string (if (handler :required) reqdoc opdoc)
                             usage-fragment)))
-    (print "usage: " (get args 1) " [option] ... ")
+    (print "usage: " (get args 0) " [option] ... ")
     (print)
     (print description)
     (print)
