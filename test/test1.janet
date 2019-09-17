@@ -1,7 +1,7 @@
 (import ../argparse :prefix "")
 
 (def argparse-params
-  ["A simple CLI tool. An example to start showing the capabilities of argparse."
+  ["A simple CLI tool. An example to show the capabilities of argparse."
    "debug" {:kind :flag
             :short "d"
             :help "Set debug mode."}
