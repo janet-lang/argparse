@@ -13,10 +13,10 @@
             :help "Some option?"
             :default "123"}])
 
-(with-dyns [:args @["janet" "somescript.janet" "-k" "100"]]
+(with-dyns [:args @["somescript.janet" "-k" "100"]]
   (def res (argparse ;argparse-params))
   (unless (= (res "key") "100") (error "bad key"))
   (unless (= (res "thing") "123") (error "bad thing")))
 
-(with-dyns [:args @["janet" "somescript.janet" "-h"]]
+(with-dyns [:args @["somescript.janet" "-h"]]
   (def res (argparse ;argparse-params)))
