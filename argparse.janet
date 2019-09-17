@@ -23,10 +23,11 @@
 
   The keys in each option table are as follows:\n\n
 
-  \t:kind - What kind of option is this? One of :flag, :option, or :accumulate.
-  A flag can either be on or off, an option is a key that will be set in the returned
-  table, and accumulate means an option can be specified 0 or more times, each
-  time appending a value to an array.\n
+  \t:kind - What kind of option is this? One of :flag, :multi, :option, or
+  :accumulate. A flag can either be on or off, a multi is a flag that can be provided
+  multiple times, each time adding 1 to a returned integer, an option is a key that
+  will be set in the returned table, and accumulate means an option can be specified
+  0 or more times, each time appending a value to an array.\n
   \t:short - Single letter for shorthand access.\n
   \t:help - Help text for the option, explaining what it is.\n
   \t:default - Default value for the option.\n
@@ -116,6 +117,10 @@
     [name handler]
     (case (handler :kind)
       :flag (put res name true)
+      :multi (do
+               (var count (or (get res name) 0))
+               (++ count)
+               (put res name count))
       :option (do
                 (put res name (get args i))
                 (++ i))

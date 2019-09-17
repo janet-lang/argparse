@@ -2,7 +2,10 @@
 
 (def argparse-params
   ["A simple CLI tool. An example to start showing the capabilities of argparse."
-   "verbose" {:kind :flag
+   "debug" {:kind :flag
+            :short "d"
+            :help "Set debug mode."}
+   "verbose" {:kind :multi
               :short "v"
               :help "Print debug information to stdout."}
    "key" {:kind :option
@@ -18,16 +21,18 @@
 
 (with-dyns [:args @["testcase.janet" "-k" "100"]]
   (def res (argparse ;argparse-params))
+  (when (res "debug") (error (string "bad debug: " (res "debug"))))
   (when (res "verbose") (error (string "bad verbose: " (res "verbose"))))
   (unless (= (res "key") "100") (error (string "bad key: " (res "key"))))
   (when (res "expr")
     (error (string "bad expr: " (string/join (res "expr") " "))))
   (unless (= (res "thing") "123") (error (string "bad thing: " (res "thing")))))
 
-(with-dyns [:args @["testcase.janet" "-k" "100" "-v" "--thing" "456"
-                    "-e" "abc" "-e" "def"]]
+(with-dyns [:args @["testcase.janet" "-k" "100" "-v" "--thing" "456" "-d" "-v"
+                    "-e" "abc" "-vvv" "-e" "def"]]
   (def res (argparse ;argparse-params))
-  (unless (res "verbose") (error (string "bad verbose: " (res "verbose"))))
+  (unless (res "debug") (error (string "bad debug: " (res "debug"))))
+  (unless (= (res "verbose") 5) (error (string "bad verbose: " (res "verbose"))))
   (unless (= (tuple ;(res "expr")) ["abc" "def"])
     (error (string "bad expr: " (string/join (res "expr") " "))))
   (unless (= (res "thing") "456") (error (string "bad thing: " (res "thing")))))
