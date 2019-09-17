@@ -15,8 +15,14 @@
 
 (with-dyns [:args @["testcase.janet" "-k" "100"]]
   (def res (argparse ;argparse-params))
+  (when (res "verbose") (error (string "bad verbose: " (res "verbose"))))
   (unless (= (res "key") "100") (error (string "bad key: " (res "key"))))
   (unless (= (res "thing") "123") (error (string "bad thing: " (res "thing")))))
+
+(with-dyns [:args @["testcase.janet" "-k" "100" "-v" "--thing" "456"]]
+  (def res (argparse ;argparse-params))
+  (unless (res "verbose") (error (string "bad verbose: " (res "verbose"))))
+  (unless (= (res "thing") "456") (error (string "bad thing: " (res "thing")))))
 
 (with-dyns [:args @["testcase.janet" "-h"]]
   (print "test -h flag (help output below is a passing test) ...")
