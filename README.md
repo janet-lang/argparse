@@ -12,22 +12,29 @@ options.
 
 (import argparse :prefix "")
 
-(def res
-  (argparse
-    "A simple CLI tool. An example to start showing the capabilities of argparse."
-    "verbose" {:kind :flag
-               :short "v"
-               :help "Print debug information to stdout."}
-    "key" {:kind :option
-           :short "k"
-           :help "An API key for getting stuff from a server."
-           :required true}
-    "thing" {:kind :option
-             :help "Some option?"
-             :default "123"}))
+(def argparse-params
+  ["A simple CLI tool. An example to show the capabilities of argparse."
+   "debug" {:kind :flag
+            :short "d"
+            :help "Set debug mode."}
+   "verbose" {:kind :multi
+              :short "v"
+              :help "Print debug information to stdout."}
+   "key" {:kind :option
+          :short "k"
+          :help "An API key for getting stuff from a server."
+          :required true}
+   "expr" {:kind :accumulate
+           :short "e"
+           :help "Search for all patterns given."}
+   "thing" {:kind :option
+            :help "Some option?"
+            :default "123"}])
 
-(unless res (os/exit 1))
-(pp res)
+(let [res (argparse ;argparse-params)]
+  (unless res
+    (os/exit 1))
+  (pp res))
 ```
 
 ## Installing
