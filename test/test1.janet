@@ -13,10 +13,11 @@
             :help "Some option?"
             :default "123"}])
 
-(with-dyns [:args @["somescript.janet" "-k" "100"]]
+(with-dyns [:args @["testcase.janet" "-k" "100"]]
   (def res (argparse ;argparse-params))
-  (unless (= (res "key") "100") (error "bad key"))
-  (unless (= (res "thing") "123") (error "bad thing")))
+  (unless (= (res "key") "100") (error (string "bad key: " (res "key"))))
+  (unless (= (res "thing") "123") (error (string "bad thing: " (res "thing")))))
 
-(with-dyns [:args @["somescript.janet" "-h"]]
+(with-dyns [:args @["testcase.janet" "-h"]]
+  (print "test -h flag (help output below is a passing test) ...")
   (def res (argparse ;argparse-params)))
