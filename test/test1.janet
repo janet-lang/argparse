@@ -2,7 +2,6 @@
 
 (def argparse-params
   ["A simple CLI tool. An example to show the capabilities of argparse."
-   :default {:kind :option}
    "debug" {:kind :flag
             :short "d"
             :help "Set debug mode."}
