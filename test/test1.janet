@@ -2,6 +2,7 @@
 
 (def argparse-params
   ["A simple CLI tool. An example to show the capabilities of argparse."
+   :default {:kind :option}
    "debug" {:kind :flag
             :short "d"
             :help "Set debug mode."}
@@ -40,3 +41,10 @@
 (with-dyns [:args @["testcase.janet" "-h"]]
   (print "test -h flag (help output below is a passing test) ...")
   (def res (argparse ;argparse-params)))
+
+(with-dyns [:args @["testcase.janet" "server"]]
+  (def res (argparse 
+             "A simple CLI tool. An example to show the capabilities of argparse."
+             :default {:kind :option}))
+  (unless (= (res :default) "server")
+    (error (string "bad default " (res :default)))))
