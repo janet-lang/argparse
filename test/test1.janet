@@ -44,7 +44,14 @@
 
 (with-dyns [:args @["testcase.janet" "server"]]
   (def res (argparse 
-             "A simple CLI tool. An example to show the capabilities of argparse."
+             "A simple CLI tool."
              :default {:kind :option}))
   (unless (= (res :default) "server")
+    (error (string "bad default " (res :default)))))
+
+(with-dyns [:args @["testcase.janet" "server" "run"]]
+  (def res (argparse 
+             "A simple CLI tool."
+             :default {:kind :accumulate}))
+  (unless (and (deep= (res :default) @["server" "run"]))
     (error (string "bad default " (res :default)))))
