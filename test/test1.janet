@@ -40,3 +40,17 @@
 (with-dyns [:args @["testcase.janet" "-h"]]
   (print "test -h flag (help output below is a passing test) ...")
   (def res (argparse ;argparse-params)))
+
+(with-dyns [:args @["testcase.janet" "server"]]
+  (def res (argparse 
+             "A simple CLI tool."
+             :default {:kind :option}))
+  (unless (= (res :default) "server")
+    (error (string "bad default " (res :default)))))
+
+(with-dyns [:args @["testcase.janet" "server" "run"]]
+  (def res (argparse 
+             "A simple CLI tool."
+             :default {:kind :accumulate}))
+  (unless (and (deep= (res :default) @["server" "run"]))
+    (error (string "bad default " (res :default)))))

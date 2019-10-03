@@ -169,7 +169,7 @@
 
       # default
       (if-let [handler (options :default)]
-        (do (++ i) (handle-option :default handler))
+        (handle-option :default handler)
         (usage "could not handle option " arg))))
 
   # Handle defaults, required options
