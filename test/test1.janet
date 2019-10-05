@@ -54,3 +54,8 @@
              :default {:kind :accumulate}))
   (unless (and (deep= (res :default) @["server" "run"]))
     (error (string "bad default " (res :default)))))
+
+(with-dyns [:args @["testcase.janet" "-k" "100" "--fake"]]
+  (print "test unknown flag (help output below is a passing test) ...")
+  (def res (argparse ;argparse-params))
+  (when res (error "Option \"fake\" is not valid, but result is non-nil.")))
