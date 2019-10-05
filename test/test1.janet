@@ -19,6 +19,10 @@
             :help "Some option?"
             :default "123"}])
 
+(defmacro suppress-stdout [& body]
+  ~(with-dyns [:out (file/open (if (os/stat "/dev/null") "/dev/null" "nul"))]
+     ,;body))
+
 (with-dyns [:args @["testcase.janet" "-k" "100"]]
   (def res (argparse ;argparse-params))
   (when (res "debug") (error (string "bad debug: " (res "debug"))))
@@ -27,6 +31,14 @@
   (when (res "expr")
     (error (string "bad expr: " (string/join (res "expr") " "))))
   (unless (= (res "thing") "123") (error (string "bad thing: " (res "thing")))))
+
+(with-dyns [:args @["testcase.janet" "-k" "100" "--thing"]]
+  (def res (suppress-stdout (argparse ;argparse-params)))
+  (when res (error "Option \"thing\" missing arg, but result is non-nil.")))
+
+(with-dyns [:args @["testcase.janet" "-k" "100" "-e" "foo" "-e"]]
+  (def res (suppress-stdout (argparse ;argparse-params)))
+  (when res (error "Option \"expr\" missing arg, but result is non-nil.")))
 
 (with-dyns [:args @["testcase.janet" "-k" "100" "-v" "--thing" "456" "-d" "-v"
                     "-e" "abc" "-vvv" "-e" "def"]]
@@ -42,15 +54,19 @@
   (def res (argparse ;argparse-params)))
 
 (with-dyns [:args @["testcase.janet" "server"]]
-  (def res (argparse 
+  (def res (argparse
              "A simple CLI tool."
              :default {:kind :option}))
   (unless (= (res :default) "server")
     (error (string "bad default " (res :default)))))
 
 (with-dyns [:args @["testcase.janet" "server" "run"]]
-  (def res (argparse 
+  (def res (argparse
              "A simple CLI tool."
              :default {:kind :accumulate}))
   (unless (and (deep= (res :default) @["server" "run"]))
     (error (string "bad default " (res :default)))))
+
+(with-dyns [:args @["testcase.janet" "-k" "100" "--fake"]]
+  (def res (suppress-stdout (argparse ;argparse-params)))
+  (when res (error "Option \"fake\" is not valid, but result is non-nil.")))
