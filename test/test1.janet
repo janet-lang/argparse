@@ -19,6 +19,10 @@
             :help "Some option?"
             :default "123"}])
 
+(defmacro suppress-stdout [& body]
+  ~(with-dyns [:out (file/open (if (os/stat "/dev/null") "/dev/null" "nul"))]
+     ,;body))
+
 (with-dyns [:args @["testcase.janet" "-k" "100"]]
   (def res (argparse ;argparse-params))
   (when (res "debug") (error (string "bad debug: " (res "debug"))))
@@ -29,11 +33,11 @@
   (unless (= (res "thing") "123") (error (string "bad thing: " (res "thing")))))
 
 (with-dyns [:args @["testcase.janet" "-k" "100" "--thing"]]
-  (def res (argparse ;argparse-params))
+  (def res (suppress-stdout (argparse ;argparse-params)))
   (when res (error "Option \"thing\" missing arg, but result is non-nil.")))
 
 (with-dyns [:args @["testcase.janet" "-k" "100" "-e" "foo" "-e"]]
-  (def res (argparse ;argparse-params))
+  (def res (suppress-stdout (argparse ;argparse-params)))
   (when res (error "Option \"expr\" missing arg, but result is non-nil.")))
 
 (with-dyns [:args @["testcase.janet" "-k" "100" "-v" "--thing" "456" "-d" "-v"
@@ -64,6 +68,5 @@
     (error (string "bad default " (res :default)))))
 
 (with-dyns [:args @["testcase.janet" "-k" "100" "--fake"]]
-  (print "test unknown flag (help output below is a passing test) ...")
-  (def res (argparse ;argparse-params))
+  (def res (suppress-stdout (argparse ;argparse-params)))
   (when res (error "Option \"fake\" is not valid, but result is non-nil.")))
