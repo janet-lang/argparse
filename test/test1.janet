@@ -28,6 +28,14 @@
     (error (string "bad expr: " (string/join (res "expr") " "))))
   (unless (= (res "thing") "123") (error (string "bad thing: " (res "thing")))))
 
+(with-dyns [:args @["testcase.janet" "-k" "100" "--thing"]]
+  (def res (argparse ;argparse-params))
+  (when res (error "Option \"thing\" missing arg, but result is non-nil.")))
+
+(with-dyns [:args @["testcase.janet" "-k" "100" "-e" "foo" "-e"]]
+  (def res (argparse ;argparse-params))
+  (when res (error "Option \"expr\" missing arg, but result is non-nil.")))
+
 (with-dyns [:args @["testcase.janet" "-k" "100" "-v" "--thing" "456" "-d" "-v"
                     "-e" "abc" "-vvv" "-e" "def"]]
   (def res (argparse ;argparse-params))
