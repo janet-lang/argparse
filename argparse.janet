@@ -121,14 +121,18 @@
                (var count (or (get res name) 0))
                (++ count)
                (put res name count))
-      :option (do
-                (put res name (get args i))
-                (++ i))
-      :accumulate (do
-                    (def arr (or (get res name) @[]))
-                    (array/push arr (get args i))
-                    (++ i)
-                    (put res name arr))
+      :option (if-let [arg (get args i)]
+                (do
+                  (put res name arg)
+                  (++ i))
+                (usage "missing argument for " name))
+      :accumulate (if-let [arg (get args i)]
+                    (do
+                      (def arr (or (get res name) @[]))
+                      (array/push arr arg)
+                      (++ i)
+                      (put res name arr))
+                    (usage "missing argument for " name))
       # default
       (usage "unknown option kind: " (handler :kind)))
 
