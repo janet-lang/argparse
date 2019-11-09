@@ -20,11 +20,11 @@
             :default "123"}])
 
 (defmacro suppress-stdout [& body]
-  ~(with-dyns [:out (file/open (if (os/stat "/dev/null") "/dev/null" "nul"))]
+  ~(with-dyns [:out (,file/open (if (,os/stat "/dev/null") "/dev/null" "nul") :w)]
      ,;body))
 
 (with-dyns [:args @["testcase.janet" "-k" "100"]]
-  (def res (argparse ;argparse-params))
+  (def res (suppress-stdout (argparse ;argparse-params)))
   (when (res "debug") (error (string "bad debug: " (res "debug"))))
   (when (res "verbose") (error (string "bad verbose: " (res "verbose"))))
   (unless (= (res "key") "100") (error (string "bad key: " (res "key"))))
@@ -42,7 +42,7 @@
 
 (with-dyns [:args @["testcase.janet" "-k" "100" "-v" "--thing" "456" "-d" "-v"
                     "-e" "abc" "-vvv" "-e" "def"]]
-  (def res (argparse ;argparse-params))
+  (def res (suppress-stdout (argparse ;argparse-params)))
   (unless (res "debug") (error (string "bad debug: " (res "debug"))))
   (unless (= (res "verbose") 5) (error (string "bad verbose: " (res "verbose"))))
   (unless (= (tuple ;(res "expr")) ["abc" "def"])
@@ -50,20 +50,20 @@
   (unless (= (res "thing") "456") (error (string "bad thing: " (res "thing")))))
 
 (with-dyns [:args @["testcase.janet" "-h"]]
-  (print "test -h flag (help output below is a passing test) ...")
+  (print "help output below")
   (def res (argparse ;argparse-params)))
 
 (with-dyns [:args @["testcase.janet" "server"]]
-  (def res (argparse
-             "A simple CLI tool."
-             :default {:kind :option}))
+  (def res (suppress-stdout (argparse
+                              "A simple CLI tool."
+                              :default {:kind :option})))
   (unless (= (res :default) "server")
     (error (string "bad default " (res :default)))))
 
 (with-dyns [:args @["testcase.janet" "server" "run"]]
-  (def res (argparse
-             "A simple CLI tool."
-             :default {:kind :accumulate}))
+  (def res (suppress-stdout (argparse
+                              "A simple CLI tool."
+                              :default {:kind :accumulate})))
   (unless (and (deep= (res :default) @["server" "run"]))
     (error (string "bad default " (res :default)))))
 
