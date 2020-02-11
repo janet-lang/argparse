@@ -47,7 +47,11 @@
   (unless (= (res "verbose") 5) (error (string "bad verbose: " (res "verbose"))))
   (unless (= (tuple ;(res "expr")) ["abc" "def"])
     (error (string "bad expr: " (string/join (res "expr") " "))))
-  (unless (= (res "thing") "456") (error (string "bad thing: " (res "thing")))))
+  (unless (= (res "thing") "456") (error (string "bad thing: " (res "thing"))))
+  (unless (= (tuple ;(res :order))
+             ["key" "verbose" "thing" "debug" "verbose"
+              "expr" "verbose" "verbose" "verbose" "expr"])
+    (error (string "bad order: " (string/join (res :order) " ")))))
 
 (with-dyns [:args @["testcase.janet" "-h"]]
   (print "help output below")

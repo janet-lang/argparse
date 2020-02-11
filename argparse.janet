@@ -60,7 +60,7 @@
       (put shortcodes (code 0) {:name k :handler v})))
 
   # Results table and other things
-  (def res @{})
+  (def res @{:order @[]})
   (def args (dyn :args))
   (def arglen (length args))
   (var scanning true)
@@ -115,6 +115,7 @@
   # Handle an option
   (defn handle-option
     [name handler]
+    (array/push (res :order) name)
     (case (handler :kind)
       :flag (put res name true)
       :multi (do
