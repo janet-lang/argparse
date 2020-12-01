@@ -74,3 +74,17 @@
 (with-dyns [:args @["testcase.janet" "-k" "100" "--fake"]]
   (def res (suppress-stdout (argparse ;argparse-params)))
   (when res (error "Option \"fake\" is not valid, but result is non-nil.")))
+
+(with-dyns [:args @["testcase.janet" "-l" "100" "--" "echo" "-n" "ok"]]
+  (if-let [{"length" len :default cmd-args}
+           (suppress-stdout (argparse "A simple CLI tool"
+                                      "length" {:kind :option
+                                                :short "l"
+                                                :help "key"}
+                                      :default {:kind :accumulate}))]
+    (do
+      (unless (= len "100")
+        (error "option was not parsed correctly in the presence of `--`."))
+      (unless (= ["echo" "-n" "ok"] (tuple ;cmd-args))
+        (error "unnamed arguments after `--` were not parsed correctly.")))
+    (error "arguments were not parsed correctly in the presence of `--`.")))
