@@ -39,6 +39,8 @@
   that do not start with a -- or -. Use this option to collect unnamed
   arguments to your script.\n\n
 
+  After `--`, every argument is treated as an unnamed argument.\n\n
+
   Once parsed, values are accessible in the returned table by the name
   of the option. For example (result \"verbose\") will check if the verbose
   flag is enabled."
@@ -66,6 +68,7 @@
   (var scanning true)
   (var bad false)
   (var i 1)
+  (var process-options? true)
 
   # Show usage
   (defn usage
@@ -152,9 +155,15 @@
   (while (and scanning (< i arglen))
     (def arg (get args i))
     (cond
+      # `--` turns off option processing so that
+      # the rest of arguments are treated like unnamed arguments.
+      (and (= "--" arg) process-options?)
+      (do
+        (set process-options? false)
+        (++ i))
 
       # long name (--name)
-      (string/has-prefix? "--" arg)
+      (and (string/has-prefix? "--" arg) process-options?)
       (let [name (string/slice arg 2)
             handler (get options name)]
         (++ i)
@@ -163,7 +172,7 @@
           (usage "unknown option " name)))
 
       # short names (-flags)
-      (string/has-prefix? "-" arg)
+      (and (string/has-prefix? "-" arg) process-options?)
       (let [flags (string/slice arg 1)]
         (++ i)
         (each flag flags
