@@ -45,6 +45,20 @@ will install the latest from master.
 
 ## Usage
 
+Call `argparse/argparse` to attempt to parse the command line args
+(available at `(dyn :args)`).
+
+The first argument should be a description to be displayed as help
+text.
+
+All subsequent options should be alternating keys and values where the
+keys are options to accept and the values are definitions of each option.
+
+To accept positional arguments, include a definition for the special
+value `:default`. For instance, to gather all positional arguments
+into an array, include `:default {:kind :accumulate}` in your
+arguments to `argparse`.
+
 Run `(doc argparse/argparse)` after importing for more information.
 
 ## License
