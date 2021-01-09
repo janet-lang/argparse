@@ -53,25 +53,6 @@
               "expr" "verbose" "verbose" "verbose" "expr"])
     (error (string "bad order: " (string/join (res :order) " ")))))
 
-(let [out @""]
-  (with-dyns [:args @["testcase.janet" "-h"]
-              :out  out]
-    (def res (argparse ;argparse-params))
-    (when res (error "Option \"h\", but result is non-nil."))
-    (def msg
-      (string "usage: testcase.janet [option] ... \n\n"
-              "A simple CLI tool. An example to show the capabilities of argparse.\n\n"
-              " Required:\n"
-              " -k, --key VALUE                             An API key for getting stuff from a server.\n\n"
-              " Optional:\n"
-              " -d, --debug                                 Set debug mode.\n"
-              " -e, --expr VALUE                            Search for all patterns given.\n"
-              " -h, --help                                  Show this help message.\n"
-              "     --thing VALUE=123                       Some option?\n"
-              " -v, --verbose                               Print debug information to stdout.\n\n"))
-    (unless (not (= (string out) msg))
-      (error (string "bad usage message:\n\n" out)))))
-
 (with-dyns [:args @["testcase.janet" "server"]]
   (def res (suppress-stdout (argparse
                               "A simple CLI tool."

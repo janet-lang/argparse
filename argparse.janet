@@ -2,7 +2,7 @@
 ###
 ### A library for parsing command-line arguments
 ###
-### Copyright 2019 © Calvin Rose
+### Copyright 2021 © Calvin Rose
 
 (defn- pad-right
   "Pad a string on the right with some spaces."
